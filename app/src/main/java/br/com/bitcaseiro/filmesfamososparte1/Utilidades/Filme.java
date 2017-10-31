@@ -7,17 +7,10 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
-
-/**
- * Created by Daniel on 28/10/2017.
- */
-
 public class Filme implements Parcelable {
     public Filme(JSONObject jsonObject) {
 
         try {
-            _id = jsonObject.getInt("id");
             _titulo = jsonObject.getString("title");
             _tituloOriginal = jsonObject.getString("original_title");
             _dataLancamento = jsonObject.getString("release_date");
@@ -32,8 +25,7 @@ public class Filme implements Parcelable {
 
     }
 
-    public Filme(Parcel parcel) {
-        _id = parcel.readInt();
+    private Filme(Parcel parcel) {
         _titulo = parcel.readString();
         _tituloOriginal = parcel.readString();
         _dataLancamento = parcel.readString();
@@ -43,7 +35,6 @@ public class Filme implements Parcelable {
         _popularidade = parcel.readDouble();
     }
 
-    private int _id;
     private String _titulo;
     private String _tituloOriginal;
     private String _dataLancamento;
@@ -53,10 +44,6 @@ public class Filme implements Parcelable {
     private Double _popularidade;
     private static final String URL_IMG_PEQUENA = "http://image.tmdb.org/t/p/w92";
     private static final String URL_IMG_NORMAL = "http://image.tmdb.org/t/p/w185";
-
-    public int get_id() {
-        return _id;
-    }
 
     public String getPosterPequeno() {
         return URL_IMG_PEQUENA + _poster;
@@ -97,7 +84,6 @@ public class Filme implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(_id);
         parcel.writeString(_titulo);
         parcel.writeString(_tituloOriginal);
         parcel.writeString(_dataLancamento);

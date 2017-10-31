@@ -3,13 +3,8 @@ package br.com.bitcaseiro.filmesfamososparte1.Utilidades;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Created by Daniel on 28/10/2017.
- */
 
 public final class TheMovieDbJson {
     public static ArrayList<Filme> ConverterParaLista(String json) {

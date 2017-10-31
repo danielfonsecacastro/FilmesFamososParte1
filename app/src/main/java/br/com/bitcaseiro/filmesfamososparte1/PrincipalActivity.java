@@ -2,14 +2,9 @@ package br.com.bitcaseiro.filmesfamososparte1;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LabeledIntent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
-import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,13 +15,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.net.MalformedURLException;
-import java.net.PortUnreachableException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import br.com.bitcaseiro.filmesfamososparte1.Utilidades.Filme;
 import br.com.bitcaseiro.filmesfamososparte1.Utilidades.FilmeConsulta;

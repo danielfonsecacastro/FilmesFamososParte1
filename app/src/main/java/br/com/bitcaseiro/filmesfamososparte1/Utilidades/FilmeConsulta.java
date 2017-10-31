@@ -2,10 +2,6 @@ package br.com.bitcaseiro.filmesfamososparte1.Utilidades;
 
 import java.net.URL;
 
-/**
- * Created by Daniel on 31/10/2017.
- */
-
 public class FilmeConsulta {
     private URL _url;
     private String _json;

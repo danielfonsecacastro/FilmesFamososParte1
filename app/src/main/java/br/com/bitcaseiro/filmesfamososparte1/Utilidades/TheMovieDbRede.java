@@ -9,10 +9,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-
 public class TheMovieDbRede {
 
-    private static final String API_KEY = "bd8dc3caba747528119f37766b57c2b8";
+    private static final String API_KEY = "<SUA_API_KEY>";
 
     public static URL construirUrlPopulares() {
         return construirUrl("https://api.themoviedb.org/3/movie/popular");
