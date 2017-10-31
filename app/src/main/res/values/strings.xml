@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Fimes Famosos</string>
+
+    <string name="order_mais_popular">Populares</string>
+    <string name="order_melhor_avaliacao">Recomendados</string>
+
+    <string name="mensagem_erro">Um erro ocorreu. Por favor verifique sua internet e tente novamente</string>
+
+</resources>
