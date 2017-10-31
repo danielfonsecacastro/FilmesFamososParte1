@@ -58,35 +58,35 @@ public class Filme implements Parcelable {
         return _id;
     }
 
-    public String get_poster_pequeno() {
+    public String getPosterPequeno() {
         return URL_IMG_PEQUENA + _poster;
     }
 
-    public String get_poster() {
+    public String getPoster() {
         return URL_IMG_NORMAL + _poster;
     }
 
-    public Double get_popularidade() {
+    public Double getPopularidade() {
         return _popularidade;
     }
 
-    public String get_titulo() {
+    public String getTitulo() {
         return _titulo;
     }
 
-    public String get_tituloOriginal() {
+    public String getTituloOriginal() {
         return _tituloOriginal;
     }
 
-    public String get_dataLancamento() {
+    public String getDataLancamento() {
         return _dataLancamento;
     }
 
-    public Double get_mediaVotos() {
+    public Double getMediaVotos() {
         return _mediaVotos;
     }
 
-    public String get_resumo() {
+    public String getResumo() {
         return _resumo;
     }
 
