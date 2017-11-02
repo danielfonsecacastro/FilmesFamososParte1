@@ -7,10 +7,6 @@ public class FilmeConsulta {
     private String _json;
 
 
-    public URL getUrl() {
-        return _url;
-    }
-
     public void setUrl(URL _url) {
         this._url = _url;
     }

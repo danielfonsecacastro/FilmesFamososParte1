@@ -46,7 +46,15 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/tv_votacao_popularidade"
+            android:id="@+id/tv_votacao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:id="@+id/tv_popularidade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"

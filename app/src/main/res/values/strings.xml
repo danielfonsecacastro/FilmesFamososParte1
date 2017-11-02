@@ -6,4 +6,8 @@
 
     <string name="mensagem_erro">Um erro ocorreu. Por favor verifique sua internet e tente novamente</string>
 
+    <string name="data_lancamento">Data de Lançamento : %1$s</string>
+    <string name="avaliacao">Avalição : %1$s</string>
+    <string name="popularidade">Popularidade : %1$s</string>
+
 </resources>

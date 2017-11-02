@@ -3,22 +3,23 @@ package br.com.bitcaseiro.filmesfamososparte1.Utilidades;
 import android.net.Uri;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Scanner;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class TheMovieDbRede {
 
-    private static final String API_KEY = "<SUA_API_KEY>";
+    private static final String API_KEY = "bd8dc3caba747528119f37766b57c2b8";
 
     public static URL construirUrlPopulares() {
         return construirUrl("https://api.themoviedb.org/3/movie/popular");
     }
 
     public static URL construirUrlRecomendados() {
-       return construirUrl("https://api.themoviedb.org/3/movie/top_rated");
+        return construirUrl("https://api.themoviedb.org/3/movie/top_rated");
     }
 
     private static URL construirUrl(String baseUrl) {
@@ -39,23 +40,21 @@ public class TheMovieDbRede {
     }
 
     public static String consultar(URL url) {
-        HttpURLConnection urlConnection = null;
         try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream inputStream = urlConnection.getInputStream();
 
-            Scanner scanner = new Scanner(inputStream);
-            scanner.useDelimiter("\\A");
+            OkHttpClient client = new OkHttpClient();
 
-            if (scanner.hasNext())
-                return scanner.next();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
 
+            Response response = client.newCall(request).execute();
+
+            return response.body().string();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (urlConnection != null)
-                urlConnection.disconnect();
         }
+
         return null;
     }
 }

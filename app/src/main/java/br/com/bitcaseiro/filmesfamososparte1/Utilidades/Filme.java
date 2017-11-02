@@ -2,79 +2,86 @@ package br.com.bitcaseiro.filmesfamososparte1.Utilidades;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Filme implements Parcelable {
-    public Filme(JSONObject jsonObject) {
 
-        try {
-            _titulo = jsonObject.getString("title");
-            _tituloOriginal = jsonObject.getString("original_title");
-            _dataLancamento = jsonObject.getString("release_date");
-            _mediaVotos = jsonObject.getDouble("vote_average");
-            _resumo = jsonObject.getString("overview");
-            _poster = jsonObject.getString("poster_path");
-            _popularidade = jsonObject.getDouble("popularity");
-        } catch (JSONException e) {
-            Log.e("Filme", e.getMessage());
-            e.printStackTrace();
-        }
-
-    }
-
-    private Filme(Parcel parcel) {
-        _titulo = parcel.readString();
-        _tituloOriginal = parcel.readString();
-        _dataLancamento = parcel.readString();
-        _mediaVotos = parcel.readDouble();
-        _resumo = parcel.readString();
-        _poster = parcel.readString();
-        _popularidade = parcel.readDouble();
-    }
-
-    private String _titulo;
-    private String _tituloOriginal;
-    private String _dataLancamento;
-    private Double _mediaVotos;
-    private String _resumo;
-    private String _poster;
-    private Double _popularidade;
     private static final String URL_IMG_PEQUENA = "http://image.tmdb.org/t/p/w92";
     private static final String URL_IMG_NORMAL = "http://image.tmdb.org/t/p/w185";
 
-    public String getPosterPequeno() {
-        return URL_IMG_PEQUENA + _poster;
+    public Filme() {}
+
+    private Filme(Parcel parcel) {
+        setTitulo(parcel.readString());
+        setTituloOriginal(parcel.readString());
+        setDataLancamento(parcel.readString());
+        setMediaVotos(parcel.readDouble());
+        setResumo(parcel.readString());
+        setPoster(parcel.readString());
+        setPopularidade(parcel.readDouble());
     }
 
+    private String mTitulo;
+    private String mTituloOriginal;
+    private String mDataLancamento;
+    private Double mMediaVotos;
+    private String mResumo;
+    private String mPoster;
+    private Double mPopularidade;
+
     public String getPoster() {
-        return URL_IMG_NORMAL + _poster;
+        return URL_IMG_NORMAL + mPoster;
     }
 
     public Double getPopularidade() {
-        return _popularidade;
+        return mPopularidade;
     }
 
     public String getTitulo() {
-        return _titulo;
+        return mTitulo;
     }
 
     public String getTituloOriginal() {
-        return _tituloOriginal;
+        return mTituloOriginal;
     }
 
     public String getDataLancamento() {
-        return _dataLancamento;
+        return mDataLancamento;
     }
 
     public Double getMediaVotos() {
-        return _mediaVotos;
+        return mMediaVotos;
     }
 
     public String getResumo() {
-        return _resumo;
+        return mResumo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.mTitulo = titulo;
+    }
+
+    public void setTituloOriginal(String tituloOriginal) {
+        this.mTituloOriginal = tituloOriginal;
+    }
+
+    public void setDataLancamento(String dataLancamento) {
+        this.mDataLancamento = dataLancamento;
+    }
+
+    public void setMediaVotos(Double mediaVotos) {
+        this.mMediaVotos = mediaVotos;
+    }
+
+    public void setResumo(String resumo) {
+        this.mResumo = resumo;
+    }
+
+    public void setPoster(String poster) {
+        this.mPoster = poster;
+    }
+
+    public void setPopularidade(Double popularidade) {
+        this.mPopularidade = popularidade;
     }
 
     @Override
@@ -84,13 +91,13 @@ public class Filme implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(_titulo);
-        parcel.writeString(_tituloOriginal);
-        parcel.writeString(_dataLancamento);
-        parcel.writeDouble(_mediaVotos);
-        parcel.writeString(_resumo);
-        parcel.writeString(_poster);
-        parcel.writeDouble(_popularidade);
+        parcel.writeString(mTitulo);
+        parcel.writeString(mTituloOriginal);
+        parcel.writeString(mDataLancamento);
+        parcel.writeDouble(mMediaVotos);
+        parcel.writeString(mResumo);
+        parcel.writeString(mPoster);
+        parcel.writeDouble(mPopularidade);
     }
 
     public static final Parcelable.Creator<Filme> CREATOR = new Parcelable.Creator<Filme>() {
@@ -102,6 +109,4 @@ public class Filme implements Parcelable {
             return new Filme[size];
         }
     };
-
-
 }

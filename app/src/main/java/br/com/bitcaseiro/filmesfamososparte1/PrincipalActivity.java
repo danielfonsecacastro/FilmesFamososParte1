@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,29 +14,34 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.net.URL;
 import java.util.ArrayList;
 
+import br.com.bitcaseiro.filmesfamososparte1.Utilidades.AsyncTaskDelegate;
 import br.com.bitcaseiro.filmesfamososparte1.Utilidades.Filme;
 import br.com.bitcaseiro.filmesfamososparte1.Utilidades.FilmeConsulta;
 import br.com.bitcaseiro.filmesfamososparte1.Utilidades.TheMovieDbJson;
 import br.com.bitcaseiro.filmesfamososparte1.Utilidades.TheMovieDbRede;
+import br.com.bitcaseiro.filmesfamososparte1.Utilidades.TheMovieDbService;
 
-public class PrincipalActivity extends AppCompatActivity implements FilmeAdapter.FilmeAdapterOnClickHandler {
+public class PrincipalActivity extends AppCompatActivity implements FilmeAdapter.FilmeAdapterOnClickHandler, AsyncTaskDelegate {
 
-    private FilmeAdapter _fimeAdapter;
-    private RecyclerView _filmeRecyclerView;
-    private ProgressBar _carregandoProgressBar;
-    private TextView _mensagemErroTextView;
-    private ArrayList<Filme> _filmesPopulares;
-    private ArrayList<Filme> _filmesRecomendados;
-    private String _ultimaOrdenacao;
+    private static final String FILMES_POPULARES = "FILMES_POPULARES";
+    private static final String FILMES_RECOMENDADOS = "FILMES_RECOMENDADOS";
+    private static final String ULTIMA_ORDENACAO = "ULTIMA_ORDENACAO";
+
+
+    private FilmeAdapter mFimeAdapter;
+    private ProgressBar mCarregandoProgressBar;
+    private TextView mMensagemErroTextView;
+    private ArrayList<Filme> mFilmesPopulares;
+    private ArrayList<Filme> mFilmesRecomendados;
+    private String mUltimaOrdenacao;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("FILMES_POPULARES", _filmesPopulares);
-        outState.putParcelableArrayList("FILMES_RECOMENDADOS", _filmesRecomendados);
-        outState.putString("ULTIMA_ORDENACAO", _ultimaOrdenacao);
+        outState.putParcelableArrayList(FILMES_POPULARES, mFilmesPopulares);
+        outState.putParcelableArrayList(FILMES_RECOMENDADOS, mFilmesRecomendados);
+        outState.putString(ULTIMA_ORDENACAO, mUltimaOrdenacao);
         super.onSaveInstanceState(outState);
     }
 
@@ -46,34 +50,34 @@ public class PrincipalActivity extends AppCompatActivity implements FilmeAdapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey("FILMES_POPULARES"))
-            _filmesPopulares = savedInstanceState.getParcelableArrayList("FILMES_POPULARES");
+        if (savedInstanceState != null && savedInstanceState.containsKey(FILMES_POPULARES))
+            mFilmesPopulares = savedInstanceState.getParcelableArrayList(FILMES_POPULARES);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey("FILMES_RECOMENDADOS"))
-            _filmesRecomendados = savedInstanceState.getParcelableArrayList("FILMES_RECOMENDADOS");
+        if (savedInstanceState != null && savedInstanceState.containsKey(FILMES_RECOMENDADOS))
+            mFilmesRecomendados = savedInstanceState.getParcelableArrayList(FILMES_RECOMENDADOS);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey("ULTIMA_ORDENACAO"))
-            _ultimaOrdenacao = savedInstanceState.getString("ULTIMA_ORDENACAO");
+        if (savedInstanceState != null && savedInstanceState.containsKey(ULTIMA_ORDENACAO))
+            mUltimaOrdenacao = savedInstanceState.getString(ULTIMA_ORDENACAO);
 
-        _carregandoProgressBar = (ProgressBar) findViewById(R.id.pb_carregando);
-        _mensagemErroTextView = (TextView) findViewById(R.id.tv_mensagem_erro);
+        mCarregandoProgressBar = (ProgressBar) findViewById(R.id.pb_carregando);
+        mMensagemErroTextView = (TextView) findViewById(R.id.tv_mensagem_erro);
 
-        _fimeAdapter = new FilmeAdapter(this);
+        mFimeAdapter = new FilmeAdapter(this);
 
-        _filmeRecyclerView = (RecyclerView) findViewById(R.id.filme_recyclerView);
+        RecyclerView mFilmeRecyclerView = (RecyclerView) findViewById(R.id.filme_recyclerView);
 
-        _filmeRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        _filmeRecyclerView.setHasFixedSize(false);
-        _filmeRecyclerView.setAdapter(_fimeAdapter);
+        mFilmeRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mFilmeRecyclerView.setHasFixedSize(false);
+        mFilmeRecyclerView.setAdapter(mFimeAdapter);
 
         if (temConexaoComInternet()) {
-            if (_ultimaOrdenacao == null || _ultimaOrdenacao.isEmpty() || _ultimaOrdenacao.equals("Populares"))
+            if (mUltimaOrdenacao == null || mUltimaOrdenacao.isEmpty() || mUltimaOrdenacao.equals("Populares"))
                 carregarPopulares();
             else
                 carregarRecomendados();
 
         } else {
-            _mensagemErroTextView.setVisibility(View.VISIBLE);
+            mMensagemErroTextView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -87,33 +91,35 @@ public class PrincipalActivity extends AppCompatActivity implements FilmeAdapter
 
     private void carregarPopulares() {
         try {
-            _ultimaOrdenacao = "Populares";
+            mUltimaOrdenacao = "Populares";
 
-            if (_filmesPopulares == null) {
-                new TheMovieDbConsultaTask().execute(TheMovieDbRede.construirUrlPopulares());
+            if (mFilmesPopulares == null) {
+                mCarregandoProgressBar.setVisibility(View.VISIBLE);
+                new TheMovieDbService(getApplicationContext(), this).execute(TheMovieDbRede.construirUrlPopulares());
                 return;
             }
 
-            _fimeAdapter.setFilmes(_filmesPopulares);
+            mFimeAdapter.setFilmes(mFilmesPopulares);
         } catch (Exception e) {
-            _carregandoProgressBar.setVisibility(View.INVISIBLE);
-            _mensagemErroTextView.setVisibility(View.VISIBLE);
+            mCarregandoProgressBar.setVisibility(View.INVISIBLE);
+            mMensagemErroTextView.setVisibility(View.VISIBLE);
         }
     }
 
     private void carregarRecomendados() {
         try {
-            _ultimaOrdenacao = "Recomendados";
+            mUltimaOrdenacao = "Recomendados";
 
-            if (_filmesRecomendados == null) {
-                new TheMovieDbConsultaTask().execute(TheMovieDbRede.construirUrlRecomendados());
+            if (mFilmesRecomendados == null) {
+                mCarregandoProgressBar.setVisibility(View.VISIBLE);
+                new TheMovieDbService(getApplicationContext(), this).execute(TheMovieDbRede.construirUrlRecomendados());
                 return;
             }
 
-            _fimeAdapter.setFilmes(_filmesRecomendados);
+            mFimeAdapter.setFilmes(mFilmesRecomendados);
         } catch (Exception e) {
-            _carregandoProgressBar.setVisibility(View.INVISIBLE);
-            _mensagemErroTextView.setVisibility(View.VISIBLE);
+            mCarregandoProgressBar.setVisibility(View.INVISIBLE);
+            mMensagemErroTextView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -145,36 +151,24 @@ public class PrincipalActivity extends AppCompatActivity implements FilmeAdapter
         startActivity(intent);
     }
 
-    public class TheMovieDbConsultaTask extends AsyncTask<URL, Void, FilmeConsulta> {
-        @Override
-        protected void onPreExecute() {
-            _carregandoProgressBar.setVisibility(View.VISIBLE);
-            super.onPreExecute();
-        }
+    @Override
+    public void processFinish(Object output) {
+        mCarregandoProgressBar.setVisibility(View.INVISIBLE);
 
-        @Override
-        protected FilmeConsulta doInBackground(URL... urls) {
-
-            FilmeConsulta resultado = new FilmeConsulta();
-            resultado.setJson(TheMovieDbRede.consultar(urls[0]));
-            resultado.setUrl(urls[0]);
-
-            return resultado;
-        }
-
-        @Override
-        protected void onPostExecute(FilmeConsulta resultado) {
-            _carregandoProgressBar.setVisibility(View.INVISIBLE);
+        if (output != null) {
+            FilmeConsulta resultado = (FilmeConsulta) output;
 
             if (resultado.ordenadoPorPopular()) {
-                _filmesPopulares = TheMovieDbJson.ConverterParaLista(resultado.getJson());
-                _fimeAdapter.setFilmes(_filmesPopulares);
+                mFilmesPopulares = TheMovieDbJson.converterParaLista(resultado.getJson());
+                mFimeAdapter.setFilmes(mFilmesPopulares);
             }
 
             if (resultado.ordenadoPorRecomendados()) {
-                _filmesRecomendados = TheMovieDbJson.ConverterParaLista(resultado.getJson());
-                _fimeAdapter.setFilmes(_filmesRecomendados);
+                mFilmesRecomendados = TheMovieDbJson.converterParaLista(resultado.getJson());
+                mFimeAdapter.setFilmes(mFilmesRecomendados);
             }
+        } else {
+            mMensagemErroTextView.setVisibility(View.VISIBLE);
         }
     }
 }
